@@ -48,8 +48,28 @@ INSERT INTO Employee(EmpNo,Ename,Job,MGR,Hiredate,Salary,Comm,Dept_no) VALUES (7
 INSERT INTO Employee(EmpNo,Ename,Job,MGR,Hiredate,Salary,Comm,Dept_no) VALUES (7902,'Ford','Analyst',7599,'1981-12-03',3000,NULL,20);
 INSERT INTO Employee(EmpNo,Ename,Job,MGR,Hiredate,Salary,Comm,Dept_no) VALUES (7934,'Miller','Clerk',7782,'1982-01-23',1300,NULL,10);
 
+SELECT e.Empno, e.Ename, e.job, z.loc
+FROM employee e INNER JOIN (SELECT Dept_no, loc FROM Department WHERE loc = "New York") as z
+ON e.Dept_no = z.Dept_no;
 
+SELECT Empno, EName, job FROM employee 
+WHERE Dept_no = (SELECT Dept_no FROM Employee WHERE Ename = "MILLER");
 
+SELECT Empno, EName, job, Salary FROM employee
+WHERE Salary = (SELECT MAX(SALARy) FROM employee);
 
-SELECT MGR, COUNT(MGR) FROM employee GROUP BY MGR;
+SELECT Empno, EName, job, Salary,z.Dept_no FROM Employee e
+INNER JOIN (SELECT AVG(Salary) as avgsalary, Dept_No FROM Employee GROUP BY Dept_no) as z
+ON z.Dept_no = e.Dept_no
+WHERE e.salary >= z.avgsalary;
+
+SELECT e.EmpNo, e.Ename, z.count as "Employee working under" FROM  Employee AS e
+INNER JOIN (SELECT MGR, COUNT(MGR) as count FROM Employee GROUP BY MGR) as z
+ON z.MGR = e.EmpNo GROUP BY z.MGR;
+
+SELECT Empno FROM Employee WHERE EmpNo NOT IN
+(SELECT DISTINCT(z.MGR) FROM Employee e
+INNER JOIN (SELECT MGR FROM Employee) as z
+ON e.Empno = z.MGR);
+
 
